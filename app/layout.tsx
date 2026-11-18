@@ -1,6 +1,8 @@
-import Script from "next/script";
+import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Outfit } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/components/AuthProvider";
+import { ToastProvider } from "@/components/Toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,29 +26,30 @@ const outfit = Outfit({
   display: "swap",
 });
 
-export const metadata = {
-  title: "Docpine — Ephemeral Cloud Shell & Container Terminal",
+export const metadata: Metadata = {
+  title: "Docpine — Lab Runner Console",
   description:
-    "Ultra-fast, isolated ephemeral container terminal in your browser with real-time WebSocket PTY streaming.",
+    "Authenticated GitHub repository runner with live Server-Sent Events execution streaming.",
   icons: {
     icon: "/favicon.svg",
   },
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} dark`}
     >
-      <head>
-        <Script
-          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-          strategy="afterInteractive"
-        />
-      </head>
-      <body>{children}</body>
+      <body className="bg-zinc-950 text-zinc-100 min-h-screen">
+        <ToastProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ToastProvider>
+      </body>
     </html>
   );
 }
-
